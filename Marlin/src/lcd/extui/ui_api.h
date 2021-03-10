@@ -55,7 +55,7 @@ namespace ExtUI {
 
   enum axis_t     : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4 };
   enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5, E6, E7 };
-  enum heater_t   : uint8_t { H0, H1, H2, H3, H4, H5, BED, CHAMBER };
+  enum heater_t   : uint8_t { H0, H1, H2, H3, H4, H5, BED, CHAMBER, COOLER };
   enum fan_t      : uint8_t { FAN0, FAN1, FAN2, FAN3, FAN4, FAN5, FAN6, FAN7 };
   enum result_t   : uint8_t { PID_BAD_EXTRUDER_NUM, PID_TEMP_TOO_HIGH, PID_TUNING_TIMEOUT, PID_DONE };
 
@@ -155,7 +155,7 @@ namespace ExtUI {
       void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval);
       inline void onMeshUpdate(const xy_int8_t &pos, const float zval) { onMeshUpdate(pos.x, pos.y, zval); }
 
-      typedef enum : unsigned char {
+      typedef enum : uint8_t {
         MESH_START,    // Prior to start of probe
         MESH_FINISH,   // Following probe of all points
         PROBE_START,   // Beginning probe of grid location
@@ -197,6 +197,7 @@ namespace ExtUI {
   void setTravelAcceleration_mm_s2(const float);
   void setFeedrate_percent(const float);
   void setFlow_percent(const int16_t, const extruder_t);
+  bool awaitingUserConfirm();
   void setUserConfirmed();
 
   #if ENABLED(LIN_ADVANCE)
@@ -214,6 +215,7 @@ namespace ExtUI {
     void setAxisMaxJerk_mm_s(const float, const extruder_t);
   #endif
 
+  extruder_t getTool(const uint8_t extruder);
   extruder_t getActiveTool();
   void setActiveTool(const extruder_t, bool no_move);
 
@@ -301,8 +303,8 @@ namespace ExtUI {
     FORCE_INLINE uint32_t safe_millis() { return millis(); } // TODO: Implement for AVR
   #endif
 
-  void delay_us(unsigned long us);
-  void delay_ms(unsigned long ms);
+  void delay_us(uint32_t us);
+  void delay_ms(uint32_t ms);
   void yield();
 
   /**
